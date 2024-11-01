@@ -6,6 +6,11 @@ export enum UserRole {
   USER = "user",
 }
 
+export enum CREATOR_TYPES {
+  ARTIST = "Artist",
+  MUSICIAN = "Musician",
+}
+
 // Interface for TypeScript to enforce schema typing
 export interface IUser extends Document {
   name: string;
@@ -14,6 +19,9 @@ export interface IUser extends Document {
   bio: string;
   profilePicture: string;
   role: UserRole;
+  creatorType?: CREATOR_TYPES;
+  isDemo?: boolean;
+  demoCreatorEmail?: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -44,6 +52,16 @@ const userSchema: Schema = new Schema<IUser>(
       type: String,
       enum: Object.values(UserRole), // Ensures role is either "creator" or "user"
       default: UserRole.USER,
+    },
+    isDemo: {
+      type: Boolean,
+    },
+    demoCreatorEmail: {
+      type: String,
+    },
+    creatorType: {
+      type: String,
+      enum: Object.values(CREATOR_TYPES),
     },
   },
   {
