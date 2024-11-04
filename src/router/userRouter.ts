@@ -14,5 +14,13 @@ router.post(
   authMiddleware,
   userController.createDemoUser
 );
-router.post("/claim-demo-creator", userController.claimDemoUser);
+router.post("/verify-claim-code", userController.verifyClaimCode);
+router.post(
+  "/claim-demo-creator",
+  authMiddleware,
+  userController.claimDemoUser
+);
+router.post("/get-user-by-id", userController.getUserByID);
+router.get("/get-all-creators", userController.getAllUser);
+
 export default router;

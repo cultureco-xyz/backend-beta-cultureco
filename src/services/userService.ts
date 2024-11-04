@@ -1,3 +1,4 @@
+import ShortUniqueId from "short-unique-id";
 import UserModel, { CREATOR_TYPES, IUser, UserRole } from "../models/UserModel";
 
 interface CreateUserDTO {
@@ -82,6 +83,15 @@ interface CreateDemoUserDTO {
   demoCreatorEmail: string;
 }
 
+const verifyClaimCode = async (userID: string, claimCode: string) => {
+  //fetch code
+  let user = await UserModel.findById(userID);
+  if (user?.claimCode === claimCode.trim()) {
+    return true;
+  }
+  return false;
+};
+
 async function createDemoUser(data: CreateDemoUserDTO): Promise<IUser> {
   try {
     // Check if the user already exists by email or username
@@ -95,6 +105,9 @@ async function createDemoUser(data: CreateDemoUserDTO): Promise<IUser> {
       throw new Error("User with this email or username already exists.");
     }
 
+    //random uid
+    const uid = new ShortUniqueId({ length: 10, dictionary: "alphanum_lower" });
+
     // Create a new user instance
     const user = new UserModel({
       name: data.name,
@@ -104,8 +117,10 @@ async function createDemoUser(data: CreateDemoUserDTO): Promise<IUser> {
       profilePicture: data.profilePicture,
       role: UserRole.CREATOR, // Default to 'user' role if not specified
       isDemo: true,
+      isClaimed: false,
       demoCreatorEmail: data.demoCreatorEmail,
       creatorType: data.creatorType,
+      claimCode: `${uid.rnd()}`,
     });
 
     // Save the user to the database
@@ -121,23 +136,36 @@ const claimDemoUser = async ({
   currentUserID,
   demoUserID,
   updatedData,
+  claimCode,
 }: {
   currentUserID: string;
   demoUserID: string;
   updatedData: CreateUserDTO;
+  claimCode: string;
 }) => {
   //get updated details
   // update demo user details - new email
   //delete current - profile-id
   try {
-    const { name, email, username, bio, profilePicture } = updatedData;
-    let updateDemoUser = UserModel.findByIdAndUpdate(demoUserID, {
-      name,
-      username,
-      bio,
-      profilePicture,
-      email,
-    });
+    const { name, email, bio, profilePicture } = updatedData;
+    let isValidClaimCode = await verifyClaimCode(demoUserID, claimCode);
+    if (!isValidClaimCode) {
+      return null;
+    }
+    let updateDemoUser = UserModel.findByIdAndUpdate(
+      demoUserID,
+      {
+        name,
+        bio,
+        profilePicture,
+        email,
+        isClaimed: true,
+      },
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
     let deleteCurrentUser = UserModel.findByIdAndDelete(currentUserID, {
       new: true,
       runValidators: true,
@@ -149,4 +177,24 @@ const claimDemoUser = async ({
   }
 };
 
-export default { createUser, changeToCreator, createDemoUser, claimDemoUser };
+const getAllCreators = async () => {
+  let users = await UserModel.find({
+    role: "creator",
+  });
+  return users;
+};
+
+const getUserByID = async (id: string) => {
+  let user = await UserModel.findById(id);
+  return user;
+};
+
+export default {
+  createUser,
+  changeToCreator,
+  createDemoUser,
+  claimDemoUser,
+  getAllCreators,
+  verifyClaimCode,
+  getUserByID,
+};

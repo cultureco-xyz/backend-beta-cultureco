@@ -1,7 +1,7 @@
 import { JWT } from "google-auth-library";
 import userService from "../services/userService";
 import { generateToken, verifyToken } from "../utils/jwtUtils";
-import { json, Request, Response } from "express";
+import { Request, Response } from "express";
 
 const createUser = async (req: Request, res: Response): Promise<any> => {
   const { SIGNUPTOKEN, username, name, bio, profilePicture } = req.body;
@@ -74,15 +74,24 @@ const createDemoUser = async (req: Request, res: Response): Promise<any> => {
   }
 };
 
-const claimDemoUser = async (req: Request, res: Response): Promise<any> => {
-  let { demoUserID } = req.body;
+const verifyClaimCode = async (req: Request, res: Response): Promise<any> => {
+  const { demoCreatorID, claimCode } = req.body;
+  let isValid = await userService.verifyClaimCode(demoCreatorID, claimCode);
+  return res.status(200).send({ isValid });
+};
 
-  let updatedUser = userService.claimDemoUser({
+const claimDemoUser = async (req: Request, res: Response): Promise<any> => {
+  let { demoUserID, claimCode } = req.body;
+
+  let updatedUser = await userService.claimDemoUser({
     currentUserID: req.body.auth_user._id,
     demoUserID: demoUserID,
     updatedData: { ...req.body, email: req.body.auth_user.email },
+    claimCode,
   });
-
+  if (!updatedUser) {
+    return res.status(400).send({ error: "request failed" });
+  }
   let token = generateToken(updatedUser);
   res.cookie("Authorization", token, {
     httpOnly: true,
@@ -92,4 +101,23 @@ const claimDemoUser = async (req: Request, res: Response): Promise<any> => {
   return res.status(200).json(updatedUser);
 };
 
-export default { createUser, changeToCreator, createDemoUser, claimDemoUser };
+const getAllUser = async (req: Request, res: Response): Promise<any> => {
+  let creators = await userService.getAllCreators();
+  return res.status(200).json(creators);
+};
+
+const getUserByID = async (req: Request, res: Response): Promise<any> => {
+  let { userID } = req.body;
+  let user = await userService.getUserByID(userID);
+  return res.status(200).json(user);
+};
+
+export default {
+  createUser,
+  changeToCreator,
+  createDemoUser,
+  claimDemoUser,
+  getAllUser,
+  verifyClaimCode,
+  getUserByID,
+};

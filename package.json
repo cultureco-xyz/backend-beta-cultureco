@@ -24,6 +24,7 @@
     "google-auth-library": "^9.14.2",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.7.3",
+    "short-unique-id": "^5.2.0",
     "uuid": "^10.0.0"
   },
   "devDependencies": {

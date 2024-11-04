@@ -19,11 +19,13 @@ export interface IUser extends Document {
   bio: string;
   profilePicture: string;
   role: UserRole;
+  claimCode?: string;
   creatorType?: CREATOR_TYPES;
   isDemo?: boolean;
   demoCreatorEmail?: string;
   createdAt: Date;
   updatedAt: Date;
+  isClaimed: boolean;
 }
 
 // Define the user schema
@@ -54,6 +56,13 @@ const userSchema: Schema = new Schema<IUser>(
       default: UserRole.USER,
     },
     isDemo: {
+      type: Boolean,
+    },
+    claimCode: {
+      type: String,
+      unique: true,
+    },
+    isClaimed: {
       type: Boolean,
     },
     demoCreatorEmail: {
