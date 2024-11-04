@@ -14,4 +14,5 @@ router.post(
   authMiddleware,
   userController.createDemoUser
 );
+router.post("/claim-demo-creator", userController.claimDemoUser);
 export default router;

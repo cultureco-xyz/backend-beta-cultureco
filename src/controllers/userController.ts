@@ -74,4 +74,22 @@ const createDemoUser = async (req: Request, res: Response): Promise<any> => {
   }
 };
 
-export default { createUser, changeToCreator, createDemoUser };
+const claimDemoUser = async (req: Request, res: Response): Promise<any> => {
+  let { demoUserID } = req.body;
+
+  let updatedUser = userService.claimDemoUser({
+    currentUserID: req.body.auth_user._id,
+    demoUserID: demoUserID,
+    updatedData: { ...req.body, email: req.body.auth_user.email },
+  });
+
+  let token = generateToken(updatedUser);
+  res.cookie("Authorization", token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+  });
+  return res.status(200).json(updatedUser);
+};
+
+export default { createUser, changeToCreator, createDemoUser, claimDemoUser };

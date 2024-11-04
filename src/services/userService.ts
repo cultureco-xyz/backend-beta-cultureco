@@ -117,4 +117,36 @@ async function createDemoUser(data: CreateDemoUserDTO): Promise<IUser> {
   }
 }
 
-export default { createUser, changeToCreator, createDemoUser };
+const claimDemoUser = async ({
+  currentUserID,
+  demoUserID,
+  updatedData,
+}: {
+  currentUserID: string;
+  demoUserID: string;
+  updatedData: CreateUserDTO;
+}) => {
+  //get updated details
+  // update demo user details - new email
+  //delete current - profile-id
+  try {
+    const { name, email, username, bio, profilePicture } = updatedData;
+    let updateDemoUser = UserModel.findByIdAndUpdate(demoUserID, {
+      name,
+      username,
+      bio,
+      profilePicture,
+      email,
+    });
+    let deleteCurrentUser = UserModel.findByIdAndDelete(currentUserID, {
+      new: true,
+      runValidators: true,
+    });
+    let dbRes = await Promise.all([updateDemoUser, deleteCurrentUser]);
+    return dbRes[0]?.toObject();
+  } catch (error) {
+    return null;
+  }
+};
+
+export default { createUser, changeToCreator, createDemoUser, claimDemoUser };
