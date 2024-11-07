@@ -12,6 +12,7 @@ const cookieParser = require("cookie-parser");
 import authRouter from "./router/authRouter";
 import fileuploadRouter from "./router/fileuploadRouter";
 import userRouter from "./router/userRouter";
+import productRouter from "./router/productRouter";
 
 // Enable CORS for all origins
 app.use(cors());
@@ -29,6 +30,7 @@ app.use(cookieParser());
 app.use("/auth", authRouter);
 app.use("/get-signed-url", fileuploadRouter);
 app.use("/user", userRouter);
+app.use("/product", productRouter);
 
 app.get("/", (req: Request, res: Response) => {
   // Print all routes to the console
