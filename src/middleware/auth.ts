@@ -7,7 +7,6 @@ const authMiddleware = (
   next: NextFunction
 ): any => {
   const token = req.cookies.Authorization;
-  console.log(token);
   if (!token) {
     return res.status(401).json({ message: "Unauthorized: No token provided" });
   }

@@ -23,6 +23,7 @@ async function getProductById(req: Request, res: Response): Promise<void> {
       res.status(200).json(product);
     }
   } catch (error) {
+    console.log(error);
     res.status(500).json({ message: "Error fetching product", error });
   }
 }
@@ -37,8 +38,20 @@ async function getAllProducts(req: Request, res: Response): Promise<void> {
   }
 }
 
+// Get products by user
+async function getProductsByUser(req: Request, res: Response): Promise<void> {
+  try {
+    const userId = req.params.userId; // Assuming user ID is passed as a route parameter
+    const products = await ProductService.getProductsByUser(userId);
+    res.status(200).json(products);
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching user's products", error });
+  }
+}
+
 export default {
   createProduct,
   getProductById,
   getAllProducts,
+  getProductsByUser,
 };

@@ -185,7 +185,8 @@ const getAllCreators = async () => {
 };
 
 const getUserByID = async (id: string) => {
-  let user = await UserModel.findById(id);
+  let user = await UserModel.findOne({ _id: `${id}` });
+  console.log({ user });
   return user;
 };
 
