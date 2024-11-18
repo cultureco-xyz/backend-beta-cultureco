@@ -16,6 +16,8 @@ import productRouter from "./router/productRouter";
 import followRouter from "./router/followRouter";
 import likeRouter from "./router/likeRouter";
 import commentRouter from "./router/commentRouter";
+import CommentLikeRouter from "./router/commentLikeRouter";
+import AlbumRouter from "./router/albumRouter";
 
 // Enable CORS for all origins
 app.use(cors());
@@ -37,6 +39,8 @@ app.use("/product", productRouter);
 app.use("/follow", followRouter);
 app.use("/like", likeRouter);
 app.use("/comment", commentRouter);
+app.use("/comment-like", CommentLikeRouter);
+app.use("/album", AlbumRouter);
 
 app.get("/", (req: Request, res: Response) => {
   // Print all routes to the console

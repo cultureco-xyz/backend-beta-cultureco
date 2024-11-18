@@ -2,7 +2,7 @@ import mongoose, { Schema, Types } from "mongoose";
 import ProductModel, { IProduct } from "./ProductModel";
 import UserModel, { IUser } from "./UserModel";
 
-interface IComment {
+export interface IComment {
   productId: Types.ObjectId | IProduct;
   userId: Types.ObjectId | IUser;
   content: string;

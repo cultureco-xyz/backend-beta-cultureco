@@ -11,6 +11,7 @@ export interface IProduct extends Document {
   imageURL: string;
   creator: Types.ObjectId | IUser;
   dropDate: Date;
+  eventDate: Date;
   quantity: number;
   regularPrice: number;
   memberPrice: number;
@@ -49,6 +50,7 @@ const ProductSchema: Schema<IProduct> = new Schema(
     imageURL: { type: String }, // If the product is a song/other media and has a cover image
     creator: { type: Types.ObjectId, ref: UserModel },
     dropDate: { type: Date }, // For digital producst
+    eventDate: { type: Date }, //for events and tickets
     quantity: { type: Number }, // For physical producst // stock limit
     regularPrice: { type: Number },
     memberPrice: { type: Number },
