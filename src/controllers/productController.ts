@@ -28,6 +28,21 @@ async function getProductById(req: Request, res: Response): Promise<void> {
   }
 }
 
+// Delete product by ID
+async function deleteProductById(req: Request, res: Response): Promise<void> {
+  try {
+    const result = await ProductService.deleteProductById(req.params.productId);
+    if (!result) {
+      res.status(404).json({ message: "Product not found" });
+    } else {
+      res.status(200).json({ message: "Product deleted successfully" })
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Error deleting product", error})
+  }
+}
+
 // Get all products
 async function getAllProducts(req: Request, res: Response): Promise<void> {
   try {
@@ -52,6 +67,7 @@ async function getProductsByUser(req: Request, res: Response): Promise<void> {
 export default {
   createProduct,
   getProductById,
+  deleteProductById,
   getAllProducts,
   getProductsByUser,
 };

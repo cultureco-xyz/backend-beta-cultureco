@@ -10,7 +10,6 @@ async function createProduct(data: IProduct): Promise<IProduct> {
 }
 
 // Get product by ID
-
 async function getProductById(
   productId: string
 ): Promise<{ productData: IProduct; likeCount: number }> {
@@ -23,6 +22,27 @@ async function getProductById(
   let res = await Promise.all([productData, likes]);
   return { productData: res[0] as IProduct, likeCount: res[1].length };
 }
+
+// Delete product by ID
+async function deleteProductById(productId: string) {
+  try {
+    const result = await ProductModel.findByIdAndDelete(productId);
+
+    if (!result) {
+      throw new Error('Product not found');
+    }
+
+    return { success: true, message: 'Product deleted successfully' };
+  } catch (error: unknown) {
+    // Type assertion to treat 'error' as an instance of Error
+    if (error instanceof Error) {
+      throw new Error(`Error deleting product: ${error.message}`);
+    }
+    // If it's not an instance of Error, you can handle other types
+    throw new Error('Unknown error occurred while deleting product');
+  }
+}
+
 
 // Get all products
 async function getAllProducts(): Promise<IProduct[]> {
@@ -37,6 +57,7 @@ async function getProductsByUser(userId: string): Promise<IProduct[]> {
 export default {
   createProduct,
   getProductById,
+  deleteProductById,
   getAllProducts,
   getProductsByUser,
 };
