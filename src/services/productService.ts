@@ -9,23 +9,6 @@ async function createProduct(data: IProduct): Promise<IProduct> {
   return await product.save();
 }
 
-
-// Update existing product
-async function updateProduct(productId: string, data: IProduct): Promise<IProduct> {
-  const updatedProduct = await ProductModel.findByIdAndUpdate(productId, data, {
-    new: true,  // returns the updated product
-    runValidators: true,  // ensures validation is applied
-  });
-
-  if (!updatedProduct) {
-    throw new Error("Product not found");
-  }
-
-  return updatedProduct;
-}
-
-
-
 // Get product by ID
 async function getProductById(
   productId: string
@@ -38,27 +21,6 @@ async function getProductById(
   let res = await Promise.all([productData, likes]);
   return { productData: res[0] as IProduct, likeCount: res[1].length };
 }
-
-// Delete product by ID
-async function deleteProductById(productId: string) {
-  try {
-    const result = await ProductModel.findByIdAndDelete(productId);
-
-    if (!result) {
-      throw new Error('Product not found');
-    }
-
-    return { success: true, message: 'Product deleted successfully' };
-  } catch (error: unknown) {
-    // Type assertion to treat 'error' as an instance of Error
-    if (error instanceof Error) {
-      throw new Error(`Error deleting product: ${error.message}`);
-    }
-    // If it's not an instance of Error, you can handle other types
-    throw new Error('Unknown error occurred while deleting product');
-  }
-}
-
 
 // Get all products
 async function getAllProducts(): Promise<IProduct[]> {
@@ -135,6 +97,4 @@ export default {
   getAllProducts,
   getProductsByUser,
   getProductStats,
-  updateProduct,
-  deleteProductById,
 };

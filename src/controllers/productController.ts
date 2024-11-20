@@ -13,18 +13,6 @@ async function createProduct(req: Request, res: Response): Promise<void> {
   }
 }
 
-// Update existing product
-async function updateProduct(req: Request, res: Response): Promise<void> {
-  try {
-    console.log(req.body);
-    const product = await ProductService.updateProduct(req.params.productId, req.body);
-    res.status(201).json(product);
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({ message: "Error updating product", error });
-  }
-}
-
 // Get product by ID
 async function getProductById(req: Request, res: Response): Promise<void> {
   try {
@@ -37,21 +25,6 @@ async function getProductById(req: Request, res: Response): Promise<void> {
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Error fetching product", error });
-  }
-}
-
-// Delete product by ID
-async function deleteProductById(req: Request, res: Response): Promise<void> {
-  try {
-    const result = await ProductService.deleteProductById(req.params.productId);
-    if (!result) {
-      res.status(404).json({ message: "Product not found" });
-    } else {
-      res.status(200).json({ message: "Product deleted successfully" })
-    }
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({ message: "Error deleting product", error})
   }
 }
 
@@ -126,6 +99,4 @@ export default {
   getAllProducts,
   getProductsByUser,
   getProductsStats,
-  updateProduct,
-  deleteProductById,
 };
