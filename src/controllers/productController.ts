@@ -49,9 +49,22 @@ async function getProductsByUser(req: Request, res: Response): Promise<void> {
   }
 }
 
+// Get product stats
+async function getProductsStats(req: Request, res: Response): Promise<void> {
+  try {
+    const { userId, productId } = req.body;
+    const stats = await ProductService.getProductStats(userId, productId);
+    res.status(200).json(stats);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Error fetching product details", error });
+  }
+}
+
 export default {
   createProduct,
   getProductById,
   getAllProducts,
   getProductsByUser,
+  getProductsStats,
 };

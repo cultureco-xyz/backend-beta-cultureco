@@ -22,5 +22,7 @@ router.post(
 );
 router.post("/get-user-by-id", userController.getUserByID);
 router.get("/get-all-creators", userController.getAllUser);
+router.get("/get-creator-stats/:id", userController.getCreatorStats);
+router.get("/get-user-stats/:id", userController.getUserStats);
 
 export default router;

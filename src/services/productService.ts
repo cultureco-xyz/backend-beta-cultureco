@@ -1,5 +1,5 @@
 // src/services/product.service.ts
-
+import CommentModel from "../models/CommentModel";
 import LikeModel from "../models/LikeModel";
 import ProductModel, { IProduct } from "../models/ProductModel";
 
@@ -10,7 +10,6 @@ async function createProduct(data: IProduct): Promise<IProduct> {
 }
 
 // Get product by ID
-
 async function getProductById(
   productId: string
 ): Promise<{ productData: IProduct; likeCount: number }> {
@@ -19,7 +18,6 @@ async function getProductById(
   //likes
   let likes = LikeModel.find({ productId: productId });
   //comments
-
   let res = await Promise.all([productData, likes]);
   return { productData: res[0] as IProduct, likeCount: res[1].length };
 }
@@ -34,9 +32,30 @@ async function getProductsByUser(userId: string): Promise<IProduct[]> {
   return await ProductModel.find({ creator: userId });
 }
 
+// Get stats (like-count, comment-count, isLiked by user post)
+async function getProductStats(userId: string, productId: string) {
+  // like count
+  const likes = LikeModel.countDocuments({ productId });
+  // comment count
+  const comment = CommentModel.countDocuments({ productId });
+  // is liked by user
+  const isLikedByUser = userId
+    ? LikeModel.findOne({ productId, userId })
+    : Promise.resolve(false);
+
+  let res = await Promise.all([likes, comment, isLikedByUser]);
+
+  return {
+    likeCount: res[0],
+    commentCount: res[1],
+    isLikedByUser: res[2] ? true : false,
+  };
+}
+
 export default {
   createProduct,
   getProductById,
   getAllProducts,
   getProductsByUser,
+  getProductStats,
 };

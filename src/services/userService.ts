@@ -1,5 +1,8 @@
 import ShortUniqueId from "short-unique-id";
 import UserModel, { CREATOR_TYPES, IUser, UserRole } from "../models/UserModel";
+import FollowModel from "../models/FollowModel";
+import ProductModel from "../models/ProductModel";
+import axios from "axios";
 
 interface CreateUserDTO {
   name: string;
@@ -190,6 +193,43 @@ const getUserByID = async (id: string) => {
   return user;
 };
 
+// get followers , members , products : count
+const getCreatorStats = async (id: string) => {
+  // followers
+  let followers = FollowModel.countDocuments({ following: id });
+  // members
+  let members = FollowModel.countDocuments({ following: id, isMember: true });
+  // posts
+  let products = ProductModel.countDocuments({ creator: id });
+
+  let res = await Promise.all([followers, members, products]);
+
+  return {
+    followerCount: res[0],
+    memberCount: res[1],
+    productCount: res[2],
+  };
+};
+
+// get followers , members , products : count
+const getUserStats = async (id: string) => {
+  // following
+  let following = FollowModel.countDocuments({ follower: id });
+  // tribes
+  let tribes = FollowModel.countDocuments({ follower: id, isMember: true });
+
+  // TODO : add collected products by user
+  // TODO : add collected badges by user
+  let res = await Promise.all([following, tribes]);
+
+  return {
+    followingCount: res[0],
+    tribesCount: res[1],
+    productCount: 0,
+    badgesCount: 0,
+  };
+};
+
 export default {
   createUser,
   changeToCreator,
@@ -198,4 +238,6 @@ export default {
   getAllCreators,
   verifyClaimCode,
   getUserByID,
+  getCreatorStats,
+  getUserStats,
 };
