@@ -52,10 +52,49 @@ async function getProductStats(userId: string, productId: string) {
   };
 }
 
+// Delete product by ID
+async function deleteProductById(productId: string) {
+  try {
+    const result = await ProductModel.findByIdAndDelete(productId);
+
+    if (!result) {
+      throw new Error("Product not found");
+    }
+
+    return { success: true, message: "Product deleted successfully" };
+  } catch (error: unknown) {
+    // Type assertion to treat 'error' as an instance of Error
+    if (error instanceof Error) {
+      throw new Error(`Error deleting product: ${error.message}`);
+    }
+    // If it's not an instance of Error, you can handle other types
+    throw new Error("Unknown error occurred while deleting product");
+  }
+}
+
+// Update existing product
+async function updateProduct(
+  productId: string,
+  data: IProduct
+): Promise<IProduct> {
+  const updatedProduct = await ProductModel.findByIdAndUpdate(productId, data, {
+    new: true, // returns the updated product
+    runValidators: true, // ensures validation is applied
+  });
+
+  if (!updatedProduct) {
+    throw new Error("Product not found");
+  }
+
+  return updatedProduct;
+}
+
 export default {
   createProduct,
   getProductById,
   getAllProducts,
   getProductsByUser,
   getProductStats,
+  updateProduct,
+  deleteProductById,
 };
