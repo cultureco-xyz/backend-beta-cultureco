@@ -13,6 +13,18 @@ async function createProduct(req: Request, res: Response): Promise<void> {
   }
 }
 
+// Update existing product
+async function updateProduct(req: Request, res: Response): Promise<void> {
+  try {
+    console.log(req.body);
+    const product = await ProductService.updateProduct(req.params.productId, req.body);
+    res.status(201).json(product);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Error updating product", error });
+  }
+}
+
 // Get product by ID
 async function getProductById(req: Request, res: Response): Promise<void> {
   try {
@@ -66,6 +78,7 @@ async function getProductsByUser(req: Request, res: Response): Promise<void> {
 
 export default {
   createProduct,
+  updateProduct,
   getProductById,
   deleteProductById,
   getAllProducts,

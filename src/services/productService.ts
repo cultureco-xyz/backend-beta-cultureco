@@ -9,6 +9,21 @@ async function createProduct(data: IProduct): Promise<IProduct> {
   return await product.save();
 }
 
+// Update existing product
+async function updateProduct(productId: string, data: IProduct): Promise<IProduct> {
+  const updatedProduct = await ProductModel.findByIdAndUpdate(productId, data, {
+    new: true,  // returns the updated product
+    runValidators: true,  // ensures validation is applied
+  });
+
+  if (!updatedProduct) {
+    throw new Error("Product not found");
+  }
+
+  return updatedProduct;
+}
+
+
 // Get product by ID
 async function getProductById(
   productId: string
@@ -56,6 +71,7 @@ async function getProductsByUser(userId: string): Promise<IProduct[]> {
 
 export default {
   createProduct,
+  updateProduct,
   getProductById,
   deleteProductById,
   getAllProducts,
