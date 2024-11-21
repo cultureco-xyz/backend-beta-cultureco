@@ -228,7 +228,7 @@ const getUserStats = async (id: string) => {
     productCount: 0,
     badgesCount: 0,
   };
-};
+}
 
 export default {
   createUser,
