@@ -12,7 +12,6 @@ router.put("/update-product/:productId", authMiddleware, ProductController.updat
 router.get("/get-product/:id", ProductController.getProductById);
 router.get("/get-all-products", ProductController.getAllProducts);
 router.get("/get-user-products/:userId", ProductController.getProductsByUser);
-
 router.post("/get-product-stats", productController.getProductsStats);
 router.delete("/delete/:productId", ProductController.deleteProductById);
 router.put(
