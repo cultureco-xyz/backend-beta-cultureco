@@ -24,4 +24,10 @@ router.get("/user/:userId", ProductPurchaseController.getPurchasesByUser);
 // Delete a purchase
 router.delete("/:id", ProductPurchaseController.deletePurchase);
 
+// Is purchased by user
+router.get(
+  "/user/:userId/:productId",
+  ProductPurchaseController.isPurchasedByUser
+);
+
 export default router;

@@ -21,6 +21,17 @@ class ProductPurchaseService {
       .populate("creator");
   }
 
+  async isPurchasedByUser(userId: string, productId: string) {
+    const res = await ProductPurchaseModel.findOne({
+      user: userId,
+      productId: productId,
+    });
+    if (res) {
+      return true;
+    }
+    return false;
+  }
+
   async updatePurchaseStatus(
     orderId: string,
     status: "PENDING" | "SUCCESS" | "FAILED"

@@ -57,6 +57,18 @@ class ProductPurchaseController {
     }
   }
 
+  async isPurchasedByUser(req: Request, res: Response): Promise<any> {
+    try {
+      const purchases = await ProductPurchaseService.isPurchasedByUser(
+        req.params.userId,
+        req.params.productId
+      );
+      return res.status(200).json({ isPurchased: purchases });
+    } catch (error) {
+      return res.status(500).json({ message: error });
+    }
+  }
+
   async deletePurchase(req: Request, res: Response): Promise<any> {
     try {
       const deletedPurchase = await ProductPurchaseService.deletePurchase(
