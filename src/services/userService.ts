@@ -230,6 +230,30 @@ const getUserStats = async (id: string) => {
   };
 }
 
+// Edit profile functionality
+const updateUserProfile = async (
+  userId: string,
+  profileData: {
+    name: string;
+    username: string;
+    bio: string;
+    profilePicture: string;
+  }
+) => {
+  // Update the user profile in the database
+  const updatedProfile = await UserModel.findByIdAndUpdate(
+    userId,
+    { $set: profileData },
+    { new: true }
+  );
+
+  if (!updatedProfile) {
+    throw new Error("Failed to update the profile or user not found");
+  }
+
+  return updatedProfile;
+};
+
 export default {
   createUser,
   changeToCreator,
@@ -240,4 +264,5 @@ export default {
   getUserByID,
   getCreatorStats,
   getUserStats,
+  updateUserProfile,
 };
