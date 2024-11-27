@@ -167,6 +167,47 @@ const getUserStats = async (req: Request, res: Response): Promise<any> => {
   }
 };
 
+const updateProfile = async (req: Request, res: Response): Promise<any> => {
+  try {
+    const userId = req.body.auth_user._id;
+    const { name, username, bio, profilePicture } = req.body;
+
+    if (!userId) {
+      return res.status(400).json({ error: "User ID is required" });
+    }
+
+    const updatedProfile = await userService.updateUserProfile(userId, {
+      name,
+      username,
+      bio,
+      profilePicture,
+    });
+
+    // Convert Mongoose document to a plain JavaScript object before passing to generateToken
+    const plainUser = updatedProfile.toObject
+      ? updatedProfile.toObject()
+      : updatedProfile;
+
+    // Regenerate token with updated user data
+    const newToken = generateToken(plainUser);
+
+    // Set the new token in cookies
+    res.cookie("Authorization", newToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+    });
+
+    return res.status(200).json({
+      message: "Profile updated successfully",
+      user: updatedProfile,
+    });
+  } catch (error) {
+    console.error("Error in updateProfile:", error);
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
 export default {
   createUser,
   changeToCreator,
@@ -177,4 +218,5 @@ export default {
   getUserByID,
   getCreatorStats,
   getUserStats,
+  updateProfile,
 };
