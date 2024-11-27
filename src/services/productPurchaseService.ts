@@ -25,6 +25,7 @@ class ProductPurchaseService {
     const res = await ProductPurchaseModel.findOne({
       user: userId,
       productId: productId,
+      status: "SUCCESS",
     });
     if (res) {
       return true;

@@ -2,9 +2,8 @@ import mongoose, { Document, Schema, Types } from "mongoose";
 import ProductModel, { IProduct } from "./ProductModel";
 import UserModel, { IUser } from "./UserModel";
 
-interface IProductPurchase {
+interface ITribePurchase {
   _id: string;
-  productId: Types.ObjectId | IProduct;
   cost?: number;
   user?: Types.ObjectId | IUser;
   creator?: Types.ObjectId | IUser;
@@ -16,9 +15,8 @@ interface IProductPurchase {
   updatedAt?: Date;
 }
 
-const ProductPurchaseSchema: Schema<IProductPurchase> = new Schema(
+const TribePurchaseSchema: Schema<ITribePurchase> = new Schema(
   {
-    productId: { type: Types.ObjectId, ref: ProductModel },
     cost: { type: Number },
     user: { type: Types.ObjectId, ref: UserModel },
     creator: { type: Types.ObjectId, ref: UserModel },
@@ -48,9 +46,9 @@ const ProductPurchaseSchema: Schema<IProductPurchase> = new Schema(
   }
 );
 
-const ProductPurchaseModel = mongoose.model<IProductPurchase>(
-  "ProductPurchase",
-  ProductPurchaseSchema
+const TribePurchaseModel = mongoose.model<ITribePurchase>(
+  "TribePurchase",
+  TribePurchaseSchema
 );
 
-export default ProductPurchaseModel;
+export default TribePurchaseModel;
