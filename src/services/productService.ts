@@ -2,6 +2,7 @@
 import CommentModel from "../models/CommentModel";
 import LikeModel from "../models/LikeModel";
 import ProductModel, { IProduct } from "../models/ProductModel";
+import ProductPurchaseModel from "../models/ProductPurchaseModel";
 
 // Create a new product
 async function createProduct(data: IProduct): Promise<IProduct> {
@@ -43,12 +44,15 @@ async function getProductStats(userId: string, productId: string) {
     ? LikeModel.findOne({ productId, userId })
     : Promise.resolve(false);
 
-  let res = await Promise.all([likes, comment, isLikedByUser]);
+  const totalCollected = ProductPurchaseModel.countDocuments({ productId })
+
+  let res = await Promise.all([likes, comment, isLikedByUser, totalCollected]);
 
   return {
     likeCount: res[0],
     commentCount: res[1],
     isLikedByUser: res[2] ? true : false,
+    totalCollected: res[3],
   };
 }
 
