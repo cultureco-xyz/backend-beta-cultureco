@@ -45,9 +45,10 @@ class ProductPurchaseService {
   }
 
   async getPurchasesByUser(userId: string) {
-    return await ProductPurchaseModel.find({ user: userId }).populate(
-      "productId"
-    );
+    return await ProductPurchaseModel.find({
+      user: userId,
+      status: "SUCCESS",
+    }).populate("productId");
   }
 
   async deletePurchase(id: string) {
