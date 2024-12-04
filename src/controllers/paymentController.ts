@@ -592,6 +592,50 @@ const createTribeCopperX = async (
   }
 };
 
+const createOrderBase = async (req: Request, res: Response): Promise<any> => {
+  try {
+    const { cost: amount, creator, productId, trx } = req.body; // Parse the request body
+    const user = req.body.auth_user;
+
+    //save the order in the db
+    let saveTrx = new ProductPurchaseModel({
+      productId,
+      cost: amount,
+      creator,
+      user: user._id,
+      order_id: trx,
+      currency: "USDC",
+      method: "BASE",
+    });
+    await saveTrx.save();
+
+    return res.status(200).json({ id: trx });
+  } catch (err) {
+    console.error("Error creating Stripe checkout session:", err);
+    return res.status(500).json({ err });
+  }
+};
+
+const verifyOrderBase = async (req: Request, res: Response): Promise<any> => {
+  const { order_id } = req.body;
+
+  //update trx db
+  let purchaseTrx = await ProductPurchaseModel.findOneAndUpdate(
+    { order_id },
+    {
+      status: "SUCCESS",
+    }
+  );
+  if (purchaseTrx) {
+    return res.status(200).json({ order_id });
+  } else {
+    console.error("Error Verifying Base checkout session:");
+    return res
+      .status(500)
+      .json({ err: "Error Verifying Base checkout session:" });
+  }
+};
+
 export default {
   createOrderRazorPay,
   verifyOrderRazorPay,
@@ -608,4 +652,6 @@ export default {
   createTribeStripe,
   verifyTribeStripe,
   createTribeCopperX,
+  createOrderBase,
+  verifyOrderBase,
 };
