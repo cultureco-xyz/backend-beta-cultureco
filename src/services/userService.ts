@@ -254,6 +254,29 @@ const updateUserProfile = async (
   return updatedProfile;
 };
 
+// username availability
+const checkUsernameAvailability = async (username: string) => {
+  // Validation: Check length and allowed characters
+  const usernameRegex = /^[a-zA-Z0-9._]{5,20}$/;
+  if (!usernameRegex.test(username)) {
+    return {
+      valid: false,
+      message: "Username must be 5-20 characters long and can include letters, numbers, '.' and '_'.",
+    };
+  }
+
+  // Check if username already exists
+  const userExists = await UserModel.findOne({ username });
+  if (userExists) {
+    return {
+      valid: false,
+      message: "Username is already taken.",
+    };
+  }
+
+  return { valid: true, message: "Username is available." };
+};
+
 export default {
   createUser,
   changeToCreator,
@@ -265,4 +288,5 @@ export default {
   getCreatorStats,
   getUserStats,
   updateUserProfile,
+  checkUsernameAvailability,
 };
