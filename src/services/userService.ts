@@ -3,6 +3,12 @@ import UserModel, { CREATOR_TYPES, IUser, UserRole } from "../models/UserModel";
 import FollowModel from "../models/FollowModel";
 import ProductModel from "../models/ProductModel";
 import axios from "axios";
+import TribePurchaseModel from "../models/TribePurchaseModel";
+import TipModel from "../models/TipModal";
+import ProductPurchaseModel from "../models/ProductPurchaseModel";
+import LikeModel from "../models/LikeModel";
+import CommentModel from "../models/CommentModel";
+import CommentLikeModel from "../models/CommentLikeModel";
 
 interface CreateUserDTO {
   name: string;
@@ -152,6 +158,8 @@ const claimDemoUser = async ({
     if (!isValidClaimCode) {
       return null;
     }
+
+    // Update Demo Profile with details entered by user who is claiming it
     let updateDemoUser = UserModel.findByIdAndUpdate(
       demoUserID,
       {
@@ -166,11 +174,96 @@ const claimDemoUser = async ({
         runValidators: true,
       }
     );
+
+    // Reassign Current User's various interactions and assets to Demo ID
+    let reassignCurrentUserTribePurchases = TribePurchaseModel.updateMany(
+      { user: currentUserID },
+      {
+        user: demoUserID,
+      },
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
+    let reassignCurrentUserTips = TipModel.updateMany(
+      { user: currentUserID },
+      {
+        user: demoUserID,
+      },
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
+    let reassignCurrentUserProductPurchase = ProductPurchaseModel.updateMany(
+      { user: currentUserID },
+      {
+        user: demoUserID,
+      },
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
+    let reassignCurrentUserLikes = LikeModel.updateMany(
+      { userId: currentUserID },
+      {
+        userId: demoUserID,
+      },
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
+    let reassignCurrentUserFollows = FollowModel.updateMany(
+      { follower: currentUserID },
+      {
+        follower: demoUserID,
+      },
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
+    let reassignCurrentUserComments = CommentModel.updateMany(
+      { userId: currentUserID },
+      {
+        userId: demoUserID,
+      },
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
+    let reassignCurrentUserCommentLikes = CommentLikeModel.updateMany(
+      { userId: currentUserID },
+      {
+        userId: demoUserID,
+      },
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
+
+    // After reassigning, delete user
     let deleteCurrentUser = UserModel.findByIdAndDelete(currentUserID, {
       new: true,
       runValidators: true,
     });
-    let dbRes = await Promise.all([updateDemoUser, deleteCurrentUser]);
+
+    let dbRes = await Promise.all([
+      updateDemoUser,
+      reassignCurrentUserTribePurchases,
+      reassignCurrentUserTips,
+      reassignCurrentUserProductPurchase,
+      reassignCurrentUserLikes,
+      reassignCurrentUserFollows,
+      reassignCurrentUserComments,
+      reassignCurrentUserCommentLikes,
+      deleteCurrentUser,
+    ]);
     return dbRes[0]?.toObject();
   } catch (error) {
     return null;
@@ -225,7 +318,7 @@ const getUserStats = async (id: string) => {
     productCount: 0,
     badgesCount: 0,
   };
-}
+};
 
 // Edit profile functionality
 const updateUserProfile = async (
@@ -258,7 +351,8 @@ const checkUsernameAvailability = async (username: string) => {
   if (!usernameRegex.test(username)) {
     return {
       valid: false,
-      message: "Username must be 5-20 characters long and can include letters, numbers, '.' and '_'.",
+      message:
+        "Username must be 5-20 characters long and can include letters, numbers, '.' and '_'.",
     };
   }
 
