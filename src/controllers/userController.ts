@@ -208,6 +208,28 @@ const updateProfile = async (req: Request, res: Response): Promise<any> => {
   }
 };
 
+// username availability
+const checkUsernameAvailability = async (req: Request, res: Response): Promise<void> => {
+  const { username } = req.body;
+
+  if (!username) {
+    res.status(400).json({ message: "Username is required." });
+    return;
+  }
+
+  try {
+    const result = await userService.checkUsernameAvailability(username);
+    if (!result.valid) {
+      res.status(409).json(result); // Conflict if username is taken
+      return;
+    }
+    res.status(200).json(result);
+  } catch (error) {
+    console.error("Error checking username:", error);
+    res.status(500).json({ message: "Internal server error." });
+  }
+};
+
 export default {
   createUser,
   changeToCreator,
@@ -219,4 +241,5 @@ export default {
   getCreatorStats,
   getUserStats,
   updateProfile,
+  checkUsernameAvailability,
 };
