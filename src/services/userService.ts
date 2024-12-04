@@ -146,9 +146,6 @@ const claimDemoUser = async ({
   updatedData: CreateUserDTO;
   claimCode: string;
 }) => {
-  //get updated details
-  // update demo user details - new email
-  //delete current - profile-id
   try {
     const { name, email, bio, profilePicture } = updatedData;
     let isValidClaimCode = await verifyClaimCode(demoUserID, claimCode);
