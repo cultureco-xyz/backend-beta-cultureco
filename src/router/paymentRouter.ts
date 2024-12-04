@@ -22,6 +22,12 @@ router.post(
 );
 
 router.post(
+  "/base/order-product",
+  authMiddleware,
+  paymentController.createOrderBase
+);
+
+router.post(
   "/razorpay/verify-product",
   authMiddleware,
   paymentController.verifyOrderRazorPay
@@ -31,6 +37,12 @@ router.post(
   "/stripe/verify-product",
   authMiddleware,
   paymentController.verifyOrderStripe
+);
+
+router.post(
+  "/base/verify-product",
+  authMiddleware,
+  paymentController.verifyOrderBase
 );
 
 //tipping

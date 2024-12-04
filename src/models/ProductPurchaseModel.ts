@@ -10,7 +10,7 @@ interface IProductPurchase {
   creator?: Types.ObjectId | IUser;
   order_id: string;
   currency: string;
-  method: "RAZORPAY" | "COPPERX" | "STRIPE";
+  method: "RAZORPAY" | "COPPERX" | "STRIPE" | "BASE";
   status: "PENDING" | "SUCCESS" | "FAILED";
   createdAt?: Date;
   updatedAt?: Date;
@@ -25,7 +25,7 @@ const ProductPurchaseSchema: Schema<IProductPurchase> = new Schema(
     method: {
       type: String,
       required: true,
-      enum: ["RAZORPAY", "COPPERX", "STRIPE"],
+      enum: ["RAZORPAY", "COPPERX", "STRIPE", "BASE"],
     },
     order_id: {
       type: String,
