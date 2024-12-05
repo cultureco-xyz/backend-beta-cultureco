@@ -1,5 +1,6 @@
 import Router from "express";
 import userController from "../controllers/userController";
+import walletController from "../controllers/walletController";
 import authMiddleware from "../middleware/auth";
 const router = Router();
 
@@ -26,5 +27,13 @@ router.get("/get-creator-stats/:id", userController.getCreatorStats);
 router.get("/get-user-stats/:id", userController.getUserStats);
 router.post("/update-profile", authMiddleware, userController.updateProfile);
 router.post("/check-username", userController.checkUsernameAvailability);
+
+//user wallet
+router.get("/wallet/:id", walletController.getUserWallet);
+router.post(
+  "/wallet/export",
+  authMiddleware,
+  walletController.exportPrivateKey
+);
 
 export default router;

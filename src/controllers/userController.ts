@@ -1,5 +1,5 @@
-import { JWT } from "google-auth-library";
 import userService from "../services/userService";
+import walletService from "../services/walletService";
 import { generateToken, verifyToken } from "../utils/jwtUtils";
 import { Request, Response } from "express";
 
@@ -17,6 +17,13 @@ const createUser = async (req: Request, res: Response): Promise<any> => {
         profilePicture,
         email: tokenData?.email,
       });
+
+      const generatedWallet = await walletService.createUserWallet(
+        `${user._id}`
+      );
+
+      console.log(generatedWallet);
+
       let jwt = generateToken(user);
       res.cookie("Authorization", jwt, {
         httpOnly: true,
@@ -209,7 +216,10 @@ const updateProfile = async (req: Request, res: Response): Promise<any> => {
 };
 
 // username availability
-const checkUsernameAvailability = async (req: Request, res: Response): Promise<void> => {
+const checkUsernameAvailability = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   const { username } = req.body;
 
   if (!username) {
