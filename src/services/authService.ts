@@ -63,4 +63,41 @@ const signin = async (
   }
 };
 
-export default { signin };
+const walletSignin = async (wallet: string): Promise<SignInResponse | null> => {
+  try {
+    if (!wallet) {
+      throw new Error("Invalid wallet");
+    }
+
+    let user = await UserModel.findOne({ email: wallet }).lean();
+
+    if (user) {
+      // User exists, generate a JWT token for authentication
+      const jwt = generateToken(user);
+      return {
+        newUser: false,
+        user,
+        token: jwt,
+      };
+    } else {
+      // New user - generate a signup token with additional information
+      const jwt = generateToken(
+        {
+          email: wallet,
+          newUser: true,
+        },
+        "10h" // Token valid for 10 hours
+      );
+
+      return {
+        newUser: true,
+        token: jwt,
+      };
+    }
+  } catch (error) {
+    console.error("Error during Google OAuth login:", error);
+    return null;
+  }
+};
+
+export default { signin, walletSignin };

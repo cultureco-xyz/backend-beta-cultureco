@@ -1,4 +1,5 @@
 import * as crypto from "crypto";
+import { ethers } from "ethers";
 import Web3 from "web3";
 
 const web3 = new Web3();
@@ -42,9 +43,17 @@ export function decryptPrivateKey(
 
 // Function to generate a new wallet (Ethereum account)
 export const generateWallet = () => {
-  const newAccount = web3.eth.accounts.create();
+  // Create a new random wallet
+  const wallet = ethers.Wallet.createRandom();
+
+  // Wallet details
+  console.log("Address:", wallet.address);
+  console.log("Private Key:", wallet.privateKey);
+  console.log("Mnemonic:", wallet?.mnemonic?.phrase);
+
   return {
-    public_key: newAccount.address,
-    private_key: newAccount.privateKey,
+    public_key: wallet.address,
+    private_key: wallet.privateKey,
+    seed_phrase: wallet?.mnemonic?.phrase,
   };
 };

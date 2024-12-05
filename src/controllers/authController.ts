@@ -2,6 +2,54 @@ import { Request, Response } from "express";
 import authService from "./../services/authService";
 import { verifyToken } from "../utils/jwtUtils";
 
+const signinWallet = async (req: Request, res: Response): Promise<any> => {
+  try {
+    const { access_token: wallet } = req.body;
+
+    if (!wallet) {
+      return res.status(400).json({
+        error: "wallet not found",
+      });
+    }
+
+    const auth = await authService.walletSignin(wallet);
+
+    if (!auth) {
+      return res.status(400).json({
+        error: "request failed",
+      });
+    }
+
+    if (auth.newUser) {
+      return res.status(200).json({
+        newUser: true,
+        signupToken: auth.token,
+      });
+    }
+
+    if (auth.user && !auth.newUser) {
+      res.cookie("Authorization", auth.token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax",
+      });
+      return res.status(200).json({
+        newUser: false,
+        user: auth.user,
+      });
+    }
+
+    // If no condition is met, return a default response
+    return res.status(500).json({
+      error: "Unexpected error",
+    });
+  } catch (er) {
+    return res.status(500).json({
+      error: er,
+    });
+  }
+};
+
 const signin = async (req: Request, res: Response): Promise<any> => {
   try {
     const { access_token } = req.body;
@@ -75,6 +123,7 @@ const isLogedIn = async (req: Request, res: Response): Promise<any> => {
       message: "unauthorized",
     });
   } catch (er) {
+    console.log(er);
     return res.status(500).json({
       error: er,
     });
@@ -90,4 +139,5 @@ export default {
   signin,
   isLogedIn,
   logOut,
+  signinWallet,
 };

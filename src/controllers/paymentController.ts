@@ -594,15 +594,14 @@ const createTribeCopperX = async (
 
 const createOrderBase = async (req: Request, res: Response): Promise<any> => {
   try {
-    const { cost: amount, creator, productId, trx } = req.body; // Parse the request body
-    const user = req.body.auth_user;
+    const { cost: amount, creator, productId, trx, user } = req.body; // Parse the request body
 
     //save the order in the db
     let saveTrx = new ProductPurchaseModel({
       productId,
       cost: amount,
       creator,
-      user: user._id,
+      user: user,
       order_id: trx,
       currency: "USDC",
       method: "BASE",
