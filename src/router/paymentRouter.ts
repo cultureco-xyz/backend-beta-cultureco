@@ -3,6 +3,8 @@ import authMiddleware from "../middleware/auth";
 import paymentController from "../controllers/paymentController";
 const router = Router();
 
+//build 2
+
 router.post(
   "/razorpay/order-product",
   authMiddleware,
@@ -21,11 +23,7 @@ router.post(
   paymentController.createOrderCopperX
 );
 
-router.post(
-  "/base/order-product",
-  authMiddleware,
-  paymentController.createOrderBase
-);
+router.post("/base/order-product", paymentController.createOrderBase);
 
 router.post(
   "/razorpay/verify-product",
@@ -39,11 +37,7 @@ router.post(
   paymentController.verifyOrderStripe
 );
 
-router.post(
-  "/base/verify-product",
-  authMiddleware,
-  paymentController.verifyOrderBase
-);
+router.post("/base/verify-product", paymentController.verifyOrderBase);
 
 //tipping
 

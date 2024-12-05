@@ -21,6 +21,7 @@
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
+    "ethers": "^6.13.4",
     "express": "^4.21.1",
     "express-list-endpoints": "^7.1.0",
     "google-auth-library": "^9.14.2",

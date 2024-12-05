@@ -5,6 +5,7 @@ interface IGeneratedWallet {
   userID: Types.ObjectId | IUser;
   public_key: string;
   encrypted_private_key: string;
+  encrypted_seed_phrase: string;
 }
 
 const GeneratedWalletSchema: Schema = new Schema(
@@ -12,6 +13,7 @@ const GeneratedWalletSchema: Schema = new Schema(
     userID: { type: Types.ObjectId, ref: UserModel },
     public_key: { type: String, required: true },
     encrypted_private_key: { type: String, required: true },
+    encrypted_seed_phrase: { type: String, required: true },
   },
   {
     timestamps: true, // Automatically add `createdAt` and `updatedAt` fields
