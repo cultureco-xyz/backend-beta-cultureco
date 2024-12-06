@@ -13,7 +13,6 @@ const GeneratedWalletSchema: Schema = new Schema(
     userID: { type: Types.ObjectId, ref: UserModel },
     public_key: { type: String, required: true },
     encrypted_private_key: { type: String, required: true },
-    encrypted_seed_phrase: { type: String, required: true },
   },
   {
     timestamps: true, // Automatically add `createdAt` and `updatedAt` fields
