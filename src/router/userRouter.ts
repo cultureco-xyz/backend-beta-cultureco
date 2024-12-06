@@ -33,7 +33,7 @@ router.get("/wallet/:id", walletController.getUserWallet);
 router.post(
   "/wallet/export",
   authMiddleware,
-  walletController.exportSeedPhrase
+  walletController.exportPrivateKey
 );
 
 export default router;

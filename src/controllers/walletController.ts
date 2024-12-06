@@ -15,14 +15,15 @@ const getUserWallet = async (req: Request, res: Response): Promise<any> => {
   }
 };
 
-const exportSeedPhrase = async (req: Request, res: Response): Promise<any> => {
+const exportPrivateKey = async (req: Request, res: Response): Promise<any> => {
   try {
     const id = req.body.auth_user._id;
-    const private_key = await walletService.exportSeedPhrase(id);
+    const private_key = await walletService.exportPrivateKey(id);
     res.status(200).send({
       private_key,
     });
   } catch (er) {
+    console.log(er);
     res.status(500).send({
       er,
     });
@@ -31,5 +32,5 @@ const exportSeedPhrase = async (req: Request, res: Response): Promise<any> => {
 
 export default {
   getUserWallet,
-  exportSeedPhrase,
+  exportPrivateKey,
 };
